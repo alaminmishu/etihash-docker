@@ -1,1 +1,37 @@
+version: '3'
+services:
+    php-apache:
+        image: mitlabs/apache-php7.0
+        ports:
+            - 80:80
+        volumes:
+            - ./DocumentRoot:/var/www/html
+        links:
+            -  'lampdb'
+        networks:
+            - default
+    lampdb:
+        image: mysql:5.7
+        ports:
+            - "3306:3306"
+        environment:
+            TZ: "Asia/Dhaka"
+            MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+            MYSQL_DATABASE: XXX
+            MYSQL_USER: XXX
+            MYSQL_PASSWORD: XXX
+            MYSQL_ROOT_PASSWORD: XXX
+        volumes:
+            - ./MySQL_DATA:/docker-entrypoint-initdb.d
+            - lampdb:/var/lib/mysql
+        networks:
+            - default
 
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        links:
+            - 'lampdb:db'
+        ports:
+            - 8081:80
+volumes:
+    lampdb:
